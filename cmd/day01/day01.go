@@ -1,14 +1,16 @@
 package main
 
 import (
+	"aoc/internal/utils"
 	"fmt"
 	"os"
-
-	"aoc/internal/utils"
+	"sort"
+	"strconv"
+	"strings"
 )
 
 func main() {
-	input, err := utils.ReadFile("resources/day01.txt")
+	input, err := utils.ReadFile("./resources/day01.txt")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
@@ -22,13 +24,57 @@ func main() {
 	os.Exit(0)
 }
 
-// part one
 func part1(input string) int {
-	return 0
+	caloriesPerElf := getCaloriesPerElf(input)
+	return max(caloriesPerElf) 
 }
 
-// part two
 func part2(input string) int {
-	return 0
+	caloriesPerElf := getCaloriesPerElf(input)
+	sort.Sort(sort.Reverse(sort.IntSlice(caloriesPerElf)))
+  return sum(caloriesPerElf[0:3])
 }
 
+func getCaloriesPerElf(input string) []int {
+	elfCalories := strings.Split(input, "\n\n")
+	caloriesPerElf := make([]int, 0)
+	for _, line := range elfCalories {
+		caloriesArray := strings.Split(line, "\n")
+		calories := make([]int, 0)
+		for _, v := range caloriesArray {
+			if len(v) > 0 {
+				j, err := strconv.Atoi(v)
+				if err != nil {
+					fmt.Println(v)
+					panic(v)
+				}
+				calories = append(calories, j)
+			}
+		}
+
+		result := sum(calories)
+		caloriesPerElf = append(caloriesPerElf, result)
+	}
+
+	return caloriesPerElf
+}
+
+func max(array []int) int {
+	max := 0
+	for _, v := range array {
+		if v > max {
+			max = v
+		}
+	}
+
+	return max
+}
+
+func sum(array []int) int {
+	result := 0
+	for _, j := range array {
+		result += j
+	}
+
+	return result
+}
